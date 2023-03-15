@@ -61,6 +61,111 @@ class Company {
     return companiesRes.rows;
   }
 
+  /** Find companies by filter.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+
+  static async filterQuery(data) {
+    const {name, minEmployees, maxEmployees} = data
+
+    if (Object.keys(data).length === 0) {
+      return await Company.findAll();
+    }
+    else if (Object.keys(data).length === 1) {
+      if (name) {
+        return await Company.findByName(name)
+      }
+      else if (minEmployees) {
+        return await Company.findByMinEmployees(minEmployees)
+      }
+      else {
+        return await Company.findByMaxEmployees(maxEmployees)
+      }
+    }
+    // else if (Object.keys(data).length === 2) {
+    //   const companiesRes = await Company.findAll();
+    //   console.log('companies res @@@@@@@@@@@@@@@@@@@@@@@@@', companiesRes)
+    //   return companiesRes;
+    // }
+    // else {
+    //   const companiesRes = await Company.findAll();
+    //   console.log('companies res @@@@@@@@@@@@@@@@@@@@@@@@@', companiesRes)
+    //   return companiesRes;
+    // }
+
+
+
+    // const companiesRes = await db.query(
+    //       `SELECT handle,
+    //               name,
+    //               description,
+    //               num_employees AS "numEmployees",
+    //               logo_url AS "logoUrl"
+    //        FROM companies
+    //        WHERE POSITION(Lower($1) IN Lower(name))>0 AND num_employees > $2 AND num_employees < $3`,
+    //     [data.name, data.minEmployees, data.maxEmployees]);
+    // console.log('i am findbyfilter return value!!!!!!!!!!!!!!!!!!!!!!!!!!!', companiesRes.rows)
+    // return companiesRes.rows;
+  }
+
+  /** Find companies by name.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+
+  static async findByName(name) {
+    const companiesRes = await db.query(
+          `SELECT handle,
+                  name,
+                  description,
+                  num_employees AS "numEmployees",
+                  logo_url AS "logoUrl"
+           FROM companies
+           WHERE POSITION(Lower($1) IN Lower(name))>0
+           ORDER BY name`,
+        [name]);
+    return companiesRes.rows;
+  }
+
+  /** Find companies by minimum number of employees.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+
+  static async findByMinEmployees(minEmployees) {
+    const companiesRes = await db.query(
+          `SELECT handle,
+                  name,
+                  description,
+                  num_employees AS "numEmployees",
+                  logo_url AS "logoUrl"
+           FROM companies
+           WHERE num_employees > $1
+           ORDER BY num_employees`,
+        [minEmployees]);
+    return companiesRes.rows;
+  }
+
+  /** Find companies by maximum number of employees.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+
+  static async findByMaxEmployees(maxEmployees) {
+    const companiesRes = await db.query(
+          `SELECT handle,
+                  name,
+                  description,
+                  num_employees AS "numEmployees",
+                  logo_url AS "logoUrl"
+           FROM companies
+           WHERE num_employees < $1
+           ORDER BY num_employees DESC`,
+        [maxEmployees]);
+    return companiesRes.rows;
+  }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
