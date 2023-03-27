@@ -12,6 +12,7 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  testJobIds
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -105,7 +106,7 @@ describe("register", function () {
   });
 });
 
-/************************************** findAll */
+// /************************************** findAll */
 
 describe("findAll", function () {
   test("works", async function () {
@@ -129,7 +130,7 @@ describe("findAll", function () {
   });
 });
 
-/************************************** get */
+// /************************************** get */
 
 describe("get", function () {
   test("works", async function () {
@@ -140,6 +141,7 @@ describe("get", function () {
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      applications: [testJobIds[0]]
     });
   });
 
@@ -153,7 +155,7 @@ describe("get", function () {
   });
 });
 
-/************************************** update */
+// /************************************** update */
 
 describe("update", function () {
   const updateData = {
@@ -209,7 +211,7 @@ describe("update", function () {
   });
 });
 
-/************************************** remove */
+// /************************************** remove */
 
 describe("remove", function () {
   test("works", async function () {
